@@ -1,19 +1,17 @@
 package mod.seanld.rawinput;
 
 import net.java.games.input.Controller;
-import net.java.games.input.ControllerEnvironment;
 import net.java.games.input.DirectAndRawInputEnvironmentPlugin;
 import net.java.games.input.Mouse;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MouseHelper;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientConnectedToServerEvent;
 import org.apache.commons.lang3.ArrayUtils;
 
 public class RawInputHandler {
@@ -25,6 +23,29 @@ public class RawInputHandler {
     public static int dy = 0;
 
     private int worldJoinTimer;
+
+    public int getTimer() {
+        return worldJoinTimer;
+    }
+
+    public void setTimer(int timer) {
+        this.worldJoinTimer = timer;
+    }
+
+    public void ticTac() {
+        this.worldJoinTimer -= 1;
+    }
+
+
+    private boolean shouldGetMouse = false;
+
+    public boolean getShouldGetMouse() {
+        return shouldGetMouse;
+    }
+
+    public void setShouldGetMouse(boolean shouldGetMouse) {
+        this.shouldGetMouse = shouldGetMouse;
+    }
 
     public static void init() {
 
@@ -68,16 +89,15 @@ public class RawInputHandler {
                 }
             }
 
-            //Minecraft.getMinecraft().player.sendMessage(new TextComponentString("Move your mouse"));
-
             while (mouse == null) {
-                for (Controller i : mouseControllers) {
-                    i.poll();
-                    float mouseX = ((Mouse) i).getX().getPollData();
+                if (mouseControllers != null) {
+                    for (Controller i : mouseControllers) {
+                        i.poll();
+                        float mouseX = ((Mouse) i).getX().getPollData();
 
-                    if (mouseX > 0.1f || mouseX < -0.1f) {
-                        mouse = ((Mouse) i);
-                        //Minecraft.getMinecraft().player.sendMessage(new TextComponentString("Mouse Found"));
+                        if (mouseX > 0.1f || mouseX < -0.1f) {
+                            mouse = ((Mouse) i);
+                        }
                     }
                 }
             }
@@ -107,20 +127,24 @@ public class RawInputHandler {
     @SubscribeEvent
     public void onEntityJoinWorld(EntityJoinWorldEvent event) {
         if (event.getEntity() != null && event.getEntity() instanceof EntityPlayer && !event.getEntity().getEntityWorld().isRemote) {
-            worldJoinTimer = 3;
+            setTimer(3);
+            setShouldGetMouse(true);
         }
     }
     @SubscribeEvent
-    public void timer(TickEvent.ClientTickEvent event) {
-        boolean shouldGetMouse = false;
-        if (worldJoinTimer > 0) {
-            worldJoinTimer--;
-            shouldGetMouse = true;
+    public void timer(ClientTickEvent event) {
+        while (getTimer() <= 0) {
+            ticTac();
         }
-        if (shouldGetMouse && worldJoinTimer == 0){
+        if (getShouldGetMouse()) {
             getMouse();
-            shouldGetMouse = false;
+            setShouldGetMouse(false);
         }
+    }
+    @SubscribeEvent
+    public void onClientConnectedToServer(ClientConnectedToServerEvent event) {
+        setTimer(3);
+        setShouldGetMouse(true);
     }
 }
 
