@@ -123,6 +123,14 @@ public class RawInputHandler {
         player.rotationYaw = saveYaw;
         player.rotationPitch = savePitch;
     }
+
+    @SubscribeEvent
+    public void onEntityJoinWorld(EntityJoinWorldEvent event) {
+        if (event.getEntity() != null && event.getEntity() instanceof EntityPlayer && !event.getEntity().getEntityWorld().isRemote) {
+            setTimer(3);
+            setShouldGetMouse(true);
+        }
+    }
     @SubscribeEvent
     public void timer(ClientTickEvent event) {
         while (getTimer() <= 0) {
