@@ -67,7 +67,7 @@ public class RawInputHandler {
                 try {
                     Thread.sleep(1);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    RawInput.LOGGER.error(e.getStackTrace());
                 }
             }
         });
@@ -75,6 +75,7 @@ public class RawInputHandler {
         inputThread.start();
     }
 
+    @SuppressWarnings("not secure")
     public static void getMouse() {
         Thread getMouseThread = new Thread(() -> {
             DirectAndRawInputEnvironmentPlugin directEnv = new DirectAndRawInputEnvironmentPlugin();
