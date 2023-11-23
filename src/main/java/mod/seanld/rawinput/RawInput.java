@@ -20,8 +20,10 @@ public class RawInput
 {
     public static final String MODID = "rawinput";
 	public static final String NAME = "Raw Mouse Input";
-    public static final String VERSION = "1.4.2";
+    public static final String VERSION = "1.5.5";
 	public static final Logger LOGGER = LogManager.getLogger(NAME);
+
+	public static final boolean DEBUG = false;
 
 
 	@SideOnly(Side.CLIENT)

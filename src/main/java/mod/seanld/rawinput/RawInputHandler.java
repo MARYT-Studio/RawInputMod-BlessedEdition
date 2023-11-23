@@ -5,14 +5,15 @@ import net.java.games.input.DirectAndRawInputEnvironmentPlugin;
 import net.java.games.input.Mouse;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MouseHelper;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientConnectedToServerEvent;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientDisconnectionFromServerEvent;
 import org.apache.commons.lang3.ArrayUtils;
+
+import static mod.seanld.rawinput.RawInput.DEBUG;
 
 public class RawInputHandler {
     public static Controller[] controllers;
@@ -52,7 +53,7 @@ public class RawInputHandler {
         startInputThread();
 
     }
-
+    @SuppressWarnings("")
     public static void startInputThread() {
         Thread inputThread = new Thread(() -> {
             while (true) {
@@ -75,8 +76,7 @@ public class RawInputHandler {
         inputThread.start();
     }
 
-    @SuppressWarnings("not secure")
-    public static void getMouse() {
+    public static void getMouse(String reason) {
         Thread getMouseThread = new Thread(() -> {
             DirectAndRawInputEnvironmentPlugin directEnv = new DirectAndRawInputEnvironmentPlugin();
             controllers = directEnv.getControllers();
@@ -105,6 +105,7 @@ public class RawInputHandler {
         });
         getMouseThread.setName("getMouseThread");
         getMouseThread.start();
+        if (DEBUG) { RawInput.LOGGER.debug(String.format("Now getMouse is fired for reason %s Is the thread started to work: ", reason)); }
     }
 
     public static void toggleRawInput() {
@@ -124,28 +125,26 @@ public class RawInputHandler {
         player.rotationYaw = saveYaw;
         player.rotationPitch = savePitch;
     }
-
-    @SubscribeEvent
-    public void onEntityJoinWorld(EntityJoinWorldEvent event) {
-        if (event.getEntity() != null && event.getEntity() instanceof EntityPlayer && !event.getEntity().getEntityWorld().isRemote) {
-            setTimer(3);
-            setShouldGetMouse(true);
-        }
-    }
     @SubscribeEvent
     public void timer(ClientTickEvent event) {
-        while (getTimer() <= 0) {
+        if (getTimer() >= 0) {
             ticTac();
         }
         if (getShouldGetMouse()) {
-            getMouse();
+            getMouse("Client Tick Event");
             setShouldGetMouse(false);
         }
     }
     @SubscribeEvent
     public void onClientConnectedToServer(ClientConnectedToServerEvent event) {
+        if (DEBUG) { RawInput.LOGGER.debug("Player Connected to Server"); }
         setTimer(3);
         setShouldGetMouse(true);
+    }
+    @SubscribeEvent
+    public void onClientDisconnectionFromServer(ClientDisconnectionFromServerEvent event) {
+        if (DEBUG) { RawInput.LOGGER.debug("Player Disconnected from Server. Is getMouse thread shutdown: " + !shouldGetMouse); }
+        setShouldGetMouse(false);
     }
 }
 
