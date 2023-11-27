@@ -13,6 +13,8 @@ import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientConnectedToSe
 import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientDisconnectionFromServerEvent;
 import org.apache.commons.lang3.ArrayUtils;
 
+
+
 import static mod.seanld.rawinput.RawInput.DEBUG;
 
 public class RawInputHandler {
@@ -146,6 +148,8 @@ public class RawInputHandler {
         if (DEBUG) { RawInput.LOGGER.debug("Player Disconnected from Server. Is getMouse thread shutdown: " + !shouldGetMouse); }
         setShouldGetMouse(false);
     }
+
+
 }
 
 
