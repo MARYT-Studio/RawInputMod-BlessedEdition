@@ -1,6 +1,6 @@
-package mod.seanld.rawinput.commands;
+package world.maryt.rawinput.commands;
 
-import mod.seanld.rawinput.RawInputHandler;
+import world.maryt.rawinput.RawInputHandler;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;

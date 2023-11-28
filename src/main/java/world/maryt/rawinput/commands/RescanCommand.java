@@ -1,6 +1,6 @@
-package mod.seanld.rawinput.commands;
+package world.maryt.rawinput.commands;
 
-import mod.seanld.rawinput.RawInputHandler;
+import world.maryt.rawinput.RawInputHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -8,7 +8,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 
-import static mod.seanld.rawinput.RawInput.DEBUG;
+import static world.maryt.rawinput.RawInput.DEBUG;
 
 public class RescanCommand extends CommandBase {
 	@Override

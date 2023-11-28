@@ -1,6 +1,6 @@
-package mod.seanld.rawinput.keybinds;
+package world.maryt.rawinput.keybinds;
 
-import mod.seanld.rawinput.RawInputHandler;
+import world.maryt.rawinput.RawInputHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import org.lwjgl.input.Keyboard;
