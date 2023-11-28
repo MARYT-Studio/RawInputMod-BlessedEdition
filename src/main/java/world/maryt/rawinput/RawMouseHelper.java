@@ -1,4 +1,4 @@
-package mod.seanld.rawinput;
+package world.maryt.rawinput;
 import net.minecraft.util.MouseHelper;
 import org.lwjgl.input.Mouse;
 
