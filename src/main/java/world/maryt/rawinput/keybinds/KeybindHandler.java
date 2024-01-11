@@ -27,7 +27,7 @@ public class KeybindHandler {
         }
 
         if (rescanKey.isPressed()) {
-            RawInputHandler.getMouse("Key trigger is fired");
+            RawInputHandler.getMouse("Key trigger Fired");
         }
     }
 }
