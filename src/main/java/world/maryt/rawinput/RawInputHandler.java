@@ -8,11 +8,8 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.util.MouseHelper;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientConnectedToServerEvent;
-import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientDisconnectionFromServerEvent;
 import org.apache.commons.lang3.ArrayUtils;
-import static mod.seanld.rawinput.RawInput.DEBUG;
 
 public class RawInputHandler {
     public static Controller[] controllers;
@@ -22,14 +19,8 @@ public class RawInputHandler {
     public static int dx = 0;
     public static int dy = 0;
 
-    private static int worldJoinTimer;
-
-    private static boolean shouldGetMouse = false;
-
     public static void init() {
-
         startInputThread();
-
     }
     @SuppressWarnings("")
     public static void startInputThread() {
@@ -42,7 +33,6 @@ public class RawInputHandler {
                 } else if (mouse != null) {
                     mouse.poll();
                 }
-
                 try {
                     Thread.sleep(1);
                 } catch (InterruptedException e) {
@@ -83,7 +73,7 @@ public class RawInputHandler {
         });
         getMouseThread.setName("getMouseThread");
         getMouseThread.start();
-        RawInput.LOGGER.debug(String.format("getMouse thread is fired now for reason: %s. should get mouse: %s", reason, shouldGetMouse));
+        RawInput.LOGGER.debug("getMouse is fired by reason: {}", reason);
     }
 
     public static void toggleRawInput() {
@@ -104,29 +94,9 @@ public class RawInputHandler {
         player.rotationPitch = savePitch;
     }
     @SubscribeEvent
-    public static void timer(ClientTickEvent event) {
-        if (worldJoinTimer >= 0) {
-            worldJoinTimer--;
-        }
-        if (shouldGetMouse) {
-            getMouse("Client Tick Event");
-            shouldGetMouse = false;
-        }
-    }
-    @SubscribeEvent
     public void onClientConnectedToServer(ClientConnectedToServerEvent event) {
-        RawInput.LOGGER.debug(String.format("Player connected to server just now. Should get mouse: %s, will then be set to true.", shouldGetMouse));
-        worldJoinTimer = 3;
-        shouldGetMouse = true;
-
+        getMouse("onClientConnectedToServer");
     }
-    @SubscribeEvent
-    public void onClientDisconnectionFromServer(ClientDisconnectionFromServerEvent event) {
-        RawInput.LOGGER.debug(String.format("Player disconnected to server just now. Should get mouse: %s, will then be set to false.", shouldGetMouse));
-        shouldGetMouse = false;
-    }
-
-
 }
 
 
