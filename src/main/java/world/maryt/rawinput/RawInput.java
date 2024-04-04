@@ -2,6 +2,7 @@ package world.maryt.rawinput;
 
 import world.maryt.rawinput.commands.RescanCommand;
 import world.maryt.rawinput.commands.ToggleCommand;
+import world.maryt.rawinput.config.Config;
 import world.maryt.rawinput.keybinds.KeybindHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.ClientCommandHandler;
@@ -20,7 +21,7 @@ public class RawInput
 {
     public static final String MODID = "rawinput";
 	public static final String NAME = "Raw Mouse Input";
-    public static final String VERSION = "1.6.3";
+    public static final String VERSION = "1.7.0";
 	public static final Logger LOGGER = LogManager.getLogger(NAME);
 
 
@@ -39,6 +40,7 @@ public class RawInput
 	@SideOnly(Side.CLIENT)
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
+		Config.load(event.getSuggestedConfigurationFile());
 		KeybindHandler.init();
 	}
 }

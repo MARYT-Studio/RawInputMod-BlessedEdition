@@ -19,7 +19,7 @@ public class ToggleCommand extends CommandBase {
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        RawInputHandler.toggleRawInput();
+        RawInputHandler.toggleRawInput(true);
     }
     @Override
     public int getRequiredPermissionLevel() {

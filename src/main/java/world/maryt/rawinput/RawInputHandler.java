@@ -7,9 +7,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.util.MouseHelper;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientConnectedToServerEvent;
 import org.apache.commons.lang3.ArrayUtils;
+import world.maryt.rawinput.config.Config;
 
 public class RawInputHandler {
     public static Controller[] controllers;
@@ -76,7 +78,7 @@ public class RawInputHandler {
         RawInput.LOGGER.debug("getMouse is fired by reason: {}", reason);
     }
 
-    public static void toggleRawInput() {
+    public static void toggleRawInput(boolean isManual) {
         EntityPlayerSP player = Minecraft.getMinecraft().player;
         float saveYaw = player.rotationYaw;
         float savePitch = player.rotationPitch;
@@ -84,18 +86,31 @@ public class RawInputHandler {
         if (Minecraft.getMinecraft().mouseHelper instanceof RawMouseHelper) {
             Minecraft.getMinecraft().mouseHelper = new MouseHelper();
             Minecraft.getMinecraft().mouseHelper.grabMouseCursor();
-            Minecraft.getMinecraft().player.sendMessage(new TextComponentString("Toggled OFF"));
+            if(isManual) Minecraft.getMinecraft().player.sendMessage(new TextComponentString("Toggled OFF"));
         } else {
             Minecraft.getMinecraft().mouseHelper = new RawMouseHelper();
             Minecraft.getMinecraft().mouseHelper.grabMouseCursor();
-            Minecraft.getMinecraft().player.sendMessage(new TextComponentString("Toggled ON"));
+            if(isManual) Minecraft.getMinecraft().player.sendMessage(new TextComponentString("Toggled ON"));
         }
         player.rotationYaw = saveYaw;
         player.rotationPitch = savePitch;
     }
+
     @SubscribeEvent
     public void onClientConnectedToServer(ClientConnectedToServerEvent event) {
         getMouse("onClientConnectedToServer");
+    }
+
+    @SubscribeEvent
+    public void onGuiOpen(GuiOpenEvent event) {
+        if (event.getGui() != null) {
+            if (Config.guiBlacklist.contains(event.getGui().getClass().getName()) &&
+                    Minecraft.getMinecraft().mouseHelper instanceof RawMouseHelper) {
+                toggleRawInput(false);
+            }
+        } else {
+            if (!(Minecraft.getMinecraft().mouseHelper instanceof RawMouseHelper)) toggleRawInput(false);
+        }
     }
 }
 

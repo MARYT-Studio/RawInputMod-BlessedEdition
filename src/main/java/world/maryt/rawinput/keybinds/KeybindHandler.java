@@ -23,7 +23,7 @@ public class KeybindHandler {
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent event) {
         if (toggleKey.isPressed()) {
-            RawInputHandler.toggleRawInput();
+            RawInputHandler.toggleRawInput(true);
         }
 
         if (rescanKey.isPressed()) {
