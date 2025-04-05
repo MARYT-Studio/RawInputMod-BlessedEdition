@@ -1,14 +1,12 @@
 [{
-  "modid": "rawinput",
-  "name": "Raw Input - Blessed Edition",
-  "description": "Adds raw input to minecraft 1.12.2.",
-  "version": "1.7.0",
-  "mcversion": "1.12.2",
-  "url": "https://github.com/MARYT-Studio/RawInputMod-BlessedEdition",
-  "updateUrl": "https://www.curseforge.com/minecraft/mc-mods/raw-mouse-input-blessed-edition",
-  "authorList": ["MARYT Studio"],
-  "credits": "Fork from seanld, xCuri0, and Fluorides",
-  "logoFile": "",
-  "screenshots": [],
-  "dependencies": []
+	"modid": "${mod_id}",
+	"name": "${mod_name}",
+	"version": "${mod_version}",
+	"mcversion": "1.12.2",
+	"description": "${mod_description}",
+	"authorList": ["${mod_authors}"],
+	"credits": "${mod_credits}",
+	"url": "${mod_url}",
+	"updateJSON": "${mod_update_json}",
+	"logoFile": "${mod_logo_path}"
 }]
