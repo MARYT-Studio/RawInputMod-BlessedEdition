@@ -18,6 +18,7 @@ public class ToggleCommand extends CommandBase {
         return "Toggles Raw Input (/rawinput)";
     }
 
+    @SuppressWarnings("RedundantThrows")
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         RawInputHandler.toggleRawInput(true);
