@@ -17,7 +17,7 @@ public class Config {
 
     private Config() {}
 
-    @SuppressWarnings("all")
+    @SuppressWarnings("InstantiationOfUtilityClass")
     public static void load(File file) {
         latestConfig = new Configuration(file);
         latestConfig.load();
