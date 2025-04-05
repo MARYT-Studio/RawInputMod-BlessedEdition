@@ -21,10 +21,12 @@ public class RawInputHandler {
     public static int dx = 0;
     public static int dy = 0;
 
+    public static boolean disabledManually = false;
+
     public static void init() {
         startInputThread();
     }
-    @SuppressWarnings("")
+    @SuppressWarnings("all")
     public static void startInputThread() {
         Thread inputThread = new Thread(() -> {
             while (true) {
@@ -86,12 +88,19 @@ public class RawInputHandler {
         if (Minecraft.getMinecraft().mouseHelper instanceof RawMouseHelper) {
             Minecraft.getMinecraft().mouseHelper = new MouseHelper();
             Minecraft.getMinecraft().mouseHelper.grabMouseCursor();
-            if(isManual) Minecraft.getMinecraft().player.sendMessage(new TextComponentString("Toggled OFF"));
+            if(isManual) {
+                Minecraft.getMinecraft().player.sendMessage(new TextComponentString("Toggled OFF"));
+                disabledManually = true;
+            }
         } else {
             Minecraft.getMinecraft().mouseHelper = new RawMouseHelper();
             Minecraft.getMinecraft().mouseHelper.grabMouseCursor();
-            if(isManual) Minecraft.getMinecraft().player.sendMessage(new TextComponentString("Toggled ON"));
+            if(isManual) {
+                Minecraft.getMinecraft().player.sendMessage(new TextComponentString("Toggled ON"));
+                disabledManually = false;
+            }
         }
+        // Restore player's yaw and pitch
         player.rotationYaw = saveYaw;
         player.rotationPitch = savePitch;
     }
@@ -103,6 +112,7 @@ public class RawInputHandler {
 
     @SubscribeEvent
     public void onGuiOpen(GuiOpenEvent event) {
+        if (disabledManually) return;
         if (event.getGui() != null) {
             if (Config.guiBlacklist.contains(event.getGui().getClass().getName()) &&
                     Minecraft.getMinecraft().mouseHelper instanceof RawMouseHelper) {
